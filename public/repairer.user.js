@@ -4,8 +4,8 @@
 // @version 0.0.1
 // @author https://github.com/pr0head
 // @homepage https://github.com/pr0head/sbg-scripts
-// @downloadURL https://github.com/pr0head/sbg-scripts/public/repairer.user.js
-// @updateURL https://github.com/pr0head/sbg-scripts/public/repairer.user.js
+// @downloadURL https://github.com/pr0head/sbg-scripts/raw/refs/heads/main/public/repairer.user.js
+// @updateURL https://github.com/pr0head/sbg-scripts/raw/refs/heads/main/public/repairer.user.js
 // @match https://sbg-game.ru/app/*
 // @grant none
 // @license MIT
