@@ -45,7 +45,7 @@
                 //console.log('Проверяется элемент:', $element.prop('tagName'), $element.attr('class')); // Дебаг
                 if ($element.hasClass('is-active')) {
                     //console.log('Активный элемент:', $element.find(".catalysers-list__level").text().trim()); // Дебаг
-                    drawNapalm($element.find(".catalysers-list__level").text().trim());
+                    draw($element.find(".catalysers-list__level").text().trim());
                 }
             }
         });
@@ -70,7 +70,9 @@
         if ($list.length) {
             $('#attack-menu').on('click', function() {
                 $block.toggle();
-                drawNapalm($list.find("li.is-active").find(".catalysers-list__level").text().trim());
+                setTimeout(function(){
+                    draw($list.find("li.is-active").find(".catalysers-list__level").text().trim());
+                }, 500);
             });
 
             console.log('Список #catalysers-list найден, наблюдение начато'); // Дебаг
@@ -93,7 +95,7 @@
         });
     }
 
-    function drawNapalm(selectedLevel) {
+    function draw(selectedLevel) {
         $block.empty();
 
         if (selectedLevel in destroySettings === false) {
@@ -111,11 +113,15 @@
 
         $('.attack-napalm').on('click', function() {
             const val = $(this).data('value');
-            console.log(val);
-            for (let i = 0; i < val; i++) {
-                $('#attack-slider-fire').click();
-            }
+            console.log('Napalm attack: ', val);
+            napalm(val);
         });
+    };
+
+    function napalm(count) {
+        for (let i = 0; i < count; i++) {
+            $('#attack-slider-fire').click();
+        }
     };
 
 })();
