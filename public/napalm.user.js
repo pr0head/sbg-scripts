@@ -23,14 +23,91 @@
         window.addEventListener('DOMContentLoaded', _ => main());
     }
 
-    async function main() {
-        //const amounts = [20, 30, 40, 50];
-        const amounts = [1,2,3];
-        const $block = $('<div class="attack-slider-highlevel"></div>');
-        amounts.forEach(val => {
-            $block.append(`<button class="attack-napalm" data-value="${val}" style="margin: 0 2px">x${val}</button>`);
+    // Уровень катализаторов и их кол-во для унчитожения точки максимального уровня с расстояния 0(min) и 40(max) метров
+    const destroySettings = {
+        //'I': {'min': 69, 'max': 1300},
+        //'II': {'min': 37, 'max': 217},
+        //'III': {'min': 29, 'max': 93},
+        'IV': {'min': 16, 'max': 35},
+        'V': {'min': 12, 'max': 21},
+        'VI': {'min': 8, 'max': 13},
+        'VII': {'min': 7, 'max': 10},
+        'VIII': {'min': 5, 'max': 7},
+        'IX': {'min': 4, 'max': 5},
+        'X': {'min': 4, 'max': 4}
+    };
+    // Минимальный поддерживаемый уровень катализаторов для напалма
+    const $block = $('<div style="text-align: center; margin-bottom: 5px; display: none"></div>');
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'class') {
+                const $element = $(mutation.target);
+                //console.log('Проверяется элемент:', $element.prop('tagName'), $element.attr('class')); // Дебаг
+                if ($element.hasClass('is-active')) {
+                    //console.log('Активный элемент:', $element.find(".catalysers-list__level").text().trim()); // Дебаг
+                    drawNapalm($element.find(".catalysers-list__level").text().trim());
+                }
+            }
         });
+    });
+    const listObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                //console.log('Добавлены узлы:', mutation.addedNodes); // Дебаг
+                $(mutation.addedNodes).filter('li').each(function() {
+                    //console.log('Новый <li> обнаружен:', $(this).text().trim()); // Дебаг
+                    observer.observe(this, { attributes: true, attributeFilter: ['class'] });
+                });
+            }
+        });
+    });
+
+    async function main() {
+        const $list = $('#catalysers-list');
         $('.attack-slider-wrp').prepend($block);
+        observeListItems();
+
+        if ($list.length) {
+            $('#attack-menu').on('click', function() {
+                $block.toggle();
+                drawNapalm($list.find("li.is-active").find(".catalysers-list__level").text().trim());
+            });
+
+            console.log('Список #catalysers-list найден, наблюдение начато'); // Дебаг
+            listObserver.observe($list[0], { childList: true, subtree: false });
+        } else {
+            console.error('Список #catalysers-list не найден в DOM');
+        }
+    }
+
+    // Функция для настройки наблюдения за <li>
+    function observeListItems() {
+        const $listItems = $('#catalysers-list li');
+        if ($listItems.length === 0) {
+            console.warn('На момент запуска <li> не найдены в #catalysers-list');
+        } else {
+            console.log('Найдено <li>:', $listItems.length); // Дебаг
+        }
+        $listItems.each(function() {
+            observer.observe(this, { attributes: true, attributeFilter: ['class'] });
+        });
+    }
+
+    function drawNapalm(selectedLevel) {
+        $block.empty();
+
+        if (selectedLevel in destroySettings === false) {
+            console.log('Неподдерживаемый катализатор ', selectedLevel);
+            return;
+        }
+
+        const settings = destroySettings[selectedLevel];
+        const minAmounts = Math.ceil((settings['min'] + settings['max'])/2);
+        const amounts = [minAmounts, Math.ceil(minAmounts*1.5), minAmounts*2];
+
+        amounts.forEach(val => {
+            $block.append(`<button class="attack-napalm" data-value="${val}" style="margin: 0 4px">x${val}</button>`);
+        });
 
         $('.attack-napalm').on('click', function() {
             const val = $(this).data('value');
@@ -39,6 +116,6 @@
                 $('#attack-slider-fire').click();
             }
         });
-    }
+    };
 
 })();
