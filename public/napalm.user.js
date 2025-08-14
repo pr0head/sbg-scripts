@@ -105,7 +105,7 @@
 
         const settings = destroySettings[selectedLevel];
         const minAmounts = Math.ceil((settings['min'] + settings['max'])/2);
-        const amounts = [minAmounts, Math.ceil(minAmounts*1.5), minAmounts*2];
+        const amounts = [minAmounts, minAmounts*2, minAmounts*4];
 
         amounts.forEach(val => {
             $block.append(`<button class="attack-napalm" data-value="${val}" style="margin: 0 4px">x${val}</button>`);
