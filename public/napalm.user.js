@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name SBG Napalm attacker
 // @description Allows you to attack multiple catalysts at the same time to counteract the portal's retention by charging.
-// @version 0.0.1
+// @version 0.0.2
 // @author https://github.com/pr0head
 // @homepage https://github.com/pr0head/sbg-scripts
 // @downloadURL https://github.com/pr0head/sbg-scripts/raw/refs/heads/main/public/napalm.user.js
