@@ -23,7 +23,7 @@
         window.addEventListener('DOMContentLoaded', _ => main());
     }
 
-    // Уровень катализаторов и их кол-во для унчитожения точки максимального уровня с расстояния 0(min) и 40(max) метров
+    // Уровень катализаторов и их кол-во для уничтожения точки максимального уровня с расстояния 0(min) и 40(max) метров
     const destroySettings = {
         //'I': {'min': 69, 'max': 1300},
         //'II': {'min': 37, 'max': 217},
@@ -98,7 +98,7 @@
     function draw(selectedLevel) {
         $block.empty();
 
-        if (selectedLevel in destroySettings === false) {
+        if (!(selectedLevel in destroySettings)) {
             console.log('Неподдерживаемый катализатор ', selectedLevel);
             return;
         }
