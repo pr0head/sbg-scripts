@@ -16,25 +16,18 @@
 
     if (window.location.pathname.startsWith('/login')) { return; }
 
-    if (['interactive', 'complete'].includes(document.readyState)) {
-        main();
-    }
-    else {
-        window.addEventListener('DOMContentLoaded', _ => main());
-    }
-
     // Уровень катализаторов и их кол-во для уничтожения точки максимального уровня с расстояния 0(min) и 40(max) метров
     const destroySettings = {
-        //'I': {'min': 69, 'max': 1300},
-        //'II': {'min': 37, 'max': 217},
-        //'III': {'min': 29, 'max': 93},
-        'IV': {'min': 16, 'max': 35},
-        'V': {'min': 12, 'max': 21},
-        'VI': {'min': 8, 'max': 13},
-        'VII': {'min': 7, 'max': 10},
-        'VIII': {'min': 5, 'max': 7},
-        'IX': {'min': 4, 'max': 5},
-        'X': {'min': 4, 'max': 4}
+        //1: {'min': 69, 'max': 1300},
+        //2: {'min': 37, 'max': 217},
+        //3: {'min': 29, 'max': 93},
+        4: {'min': 16, 'max': 35},
+        5: {'min': 12, 'max': 21},
+        6: {'min': 8, 'max': 13},
+        7: {'min': 7, 'max': 10},
+        8: {'min': 5, 'max': 7},
+        9: {'min': 4, 'max': 5},
+        10: {'min': 4, 'max': 4}
     };
     // Минимальный поддерживаемый уровень катализаторов для напалма
     const $block = $('<div style="position: absolute; margin-top: -39px; text-align: center; display: none"></div>');
@@ -44,8 +37,8 @@
                 const $element = $(mutation.target);
                 //console.log('Проверяется элемент:', $element.prop('tagName'), $element.attr('class')); // Дебаг
                 if ($element.hasClass('is-active')) {
-                    //console.log('Активный элемент:', $element.find(".catalysers-list__level").text().trim()); // Дебаг
-                    draw($element.find(".catalysers-list__level").text().trim());
+                    const selectedLevel = Number($element.attr('data-level'));
+                    draw(selectedLevel);
                 }
             }
         });
@@ -62,6 +55,13 @@
         });
     });
 
+    if (['interactive', 'complete'].includes(document.readyState)) {
+        main();
+    }
+    else {
+        window.addEventListener('DOMContentLoaded', _ => main());
+    }
+
     async function main() {
         const $list = $('#catalysers-list');
         $('.attack-slider-wrp').prepend($block);
@@ -71,7 +71,8 @@
             $('#attack-menu').on('click', function() {
                 $block.toggle();
                 setTimeout(function(){
-                    draw($list.find("li.is-active").find(".catalysers-list__level").text().trim());
+                    const selectedLevel = Number($list.find('li.is-active').attr('data-level'));
+                    draw(selectedLevel);
                 }, 500);
             });
 
@@ -97,6 +98,11 @@
 
     function draw(selectedLevel) {
         $block.empty();
+
+        if (!Number.isInteger(selectedLevel)) {
+            console.log('Уровень катализатора не найден', selectedLevel);
+            return;
+        }
 
         if (!(selectedLevel in destroySettings)) {
             console.log('Неподдерживаемый катализатор ', selectedLevel);
