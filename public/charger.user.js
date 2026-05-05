@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name SBG Point charger
 // @description Retrieves a list of keys from the inventory and charges each one fully.
-// @version 0.0.1
+// @version 0.0.2
 // @author https://github.com/pr0head
 // @homepage https://github.com/pr0head/sbg-scripts
 // @downloadURL https://github.com/pr0head/sbg-scripts/raw/refs/heads/main/public/charger.user.js
@@ -24,26 +24,40 @@
     }
 
     const onlyRepairGuard = true; // Заряжать только точки, где я владелец
-    const defaultButtonValue = 'Зарядить';
-    const progressButtonValue = 'Заряжается';
+    const defaultButtonValue = 'ЗРДТ';
 
     let myTeamID = 0;
     let inProgress = false;
+
+    function setChargingState(value) {
+        inProgress = value;
+        $('#chargerBtn').prop('disabled', value);
+    }
 
     async function main() {
         $.get('https://sbg-game.ru/api/self', async function(data) {
             if (data.t !== undefined) {
                 myTeamID = data.t
 
-                $('.inventory').find('.inventory__controls').append(`<button id="chargerBtn">${defaultButtonValue}</button>`);
+                const controls = $('.inventory').find('.inventory__controls');
+                controls.find('#chargerBtn').remove();
+
+                const chargerButton = `<button id="chargerBtn">${defaultButtonValue}</button>`;
+                const deleteButton = controls.find('#inventory-delete');
+
+                if (deleteButton.length) {
+                    deleteButton.before(chargerButton);
+                }
+                else {
+                    controls.append(chargerButton);
+                }
+
                 $('#chargerBtn').on('click', function() {
                     if (inProgress) {
-                        window.alert("Зарядка еще не завершена");
                         return;
                     }
 
-                    $('#chargerBtn').text(progressButtonValue);
-                    inProgress = true;
+                    setChargingState(true);
                     repair();
                 });
             } else {
@@ -65,10 +79,12 @@
                 processKey(item.l, item.ti);
             }
 
-            $('#chargerBtn').text(defaultButtonValue);
-            inProgress = false;
+            setChargingState(false);
 
             console.log('Done');
+        }).fail(function(err) {
+            setChargingState(false);
+            console.error('Network or server error during getting inventory', err);
         });
     }
 
