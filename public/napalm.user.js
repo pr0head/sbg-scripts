@@ -30,7 +30,7 @@
         10: {'min': 4, 'max': 4}
     };
     // Минимальный поддерживаемый уровень катализаторов для напалма
-    const $block = $('<div style="position: absolute; margin-top: -39px; text-align: center; display: none"></div>');
+    const $block = $('<div style="position: absolute; width: 100%; margin-top: -39px; text-align: center; display: none"></div>');
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.attributeName === 'class') {
